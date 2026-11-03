@@ -1,0 +1,29 @@
+{
+  "evaluation": "docs/evaluations/skill-installation-0.1.md",
+  "harnesses": {
+    "codex": {
+      "version": "0.162.1",
+      "copy": "verified",
+      "discovery": "verified through explicit mention from ~/.agents/skills; explicit-only skills are not listed to the model",
+      "invocation": "verified"
+    },
+    "chatgpt": {
+      "version": "26.1007.21434",
+      "copy": "verified",
+      "discovery": "partial: bundled Codex engine only, app interface not observed",
+      "invocation": "partial: bundled Codex engine only, app interface not observed"
+    },
+    "claude": {
+      "version": "2.1.296",
+      "copy": "verified",
+      "discovery": "verified in a project skills directory; ~/.claude/skills read observed with a previous install",
+      "invocation": "verified in a project skills directory only"
+    },
+    "cursor": {
+      "version": "3.24.12",
+      "copy": "verified",
+      "discovery": "not verified",
+      "invocation": "not verified"
+    }
+  }
+}

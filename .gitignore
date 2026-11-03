@@ -1,0 +1,16 @@
+# Operating systems
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local environment
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Temporary files
+.tmp/

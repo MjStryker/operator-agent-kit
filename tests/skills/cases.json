@@ -1,0 +1,1617 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "fix-real-bug",
+      "skill": "fix-issue",
+      "invocation": "fix-issue",
+      "prompt": "The total of [2, 3] is 2 while the contract expects 5. Verify and fix only this defect. Run python3 -m unittest.",
+      "files": {
+        "prices.py": "def total(prices):\n    return prices[0] if prices else 0\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/fix-issue/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reproduces the failing sum before changing code.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Classifies confirmed / fix now and fixes both nonempty and empty inputs.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Runs the relevant test successfully; no adjacent cleanup.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Restores the required result with a scoped change and truthful validation."
+    },
+    {
+      "id": "fix-false-positive",
+      "skill": "fix-issue",
+      "invocation": "fix-issue",
+      "prompt": "It has been reported that total([]) raises an exception. Verify and fix if necessary. Run python3 -m unittest.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/fix-issue/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Checks the empty path and classifies the report as false positive.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not modify any fixture file.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Avoids unnecessary edits when the report is wrong."
+    },
+    {
+      "id": "fix-missing-evidence",
+      "skill": "fix-issue",
+      "invocation": "fix-issue",
+      "prompt": "Production sometimes duplicates invoices. Verify this report. You only have the README, not the code or the logs.",
+      "files": {
+        "README.md": "External billing service. No code or production access provided.\n"
+      },
+      "contracts": [
+        "skills/fix-issue/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reports not established, preserving the production report as a report.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Names the missing resolving evidence without inventing a cause or editing files.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Avoids a speculative fix and identifies the evidence needed."
+    },
+    {
+      "id": "refine-no-execution",
+      "skill": "refine-prompt",
+      "invocation": "refine-prompt",
+      "prompt": "Rephrase this request: speed up the total calculation for large lists while keeping the results exactly the same. Do not touch the code.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/refine-prompt/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Returns a self-contained prompt in the request's language retaining behavior compatibility.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not implement or modify fixture files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Makes the performance target or benchmark uncertainty explicit without inventing measurements.",
+          "blocking": false,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Produces an executable request without prematurely executing it."
+    },
+    {
+      "id": "assess-evidence-limit",
+      "skill": "assess",
+      "invocation": "assess",
+      "prompt": "Assess the proposal: replacing sum with a hand-written loop would be twice as fast. No benchmark has been run.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/assess/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Distinguishes the unsupported speed claim from repository facts.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Gives a compact assessment and the resolving measurement; no fabricated timing.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not edit files or implement the proposal.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Prevents an unsupported optimization decision."
+    },
+    {
+      "id": "oak-small-route",
+      "skill": "oak",
+      "invocation": "oak",
+      "prompt": "I want to fix the total, which drops every price after the first one. What is the next step?",
+      "files": {
+        "prices.py": "def total(prices):\n    return prices[0]\n",
+        "available-skills.md": "Available: oak, fix-issue. No other skill is installed.\n"
+      },
+      "contracts": [
+        "skills/oak/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Recommends fix-issue as one immediate next invocation, without requiring a charter or a task.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not invoke another skill, fix code, or assume unavailable capabilities.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Routes a small bug without imposing a larger workflow."
+    },
+    {
+      "id": "pushback-overclaim",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review this answer: \"Both unit tests pass, so the service is validated in production.\" Do not rerun the product.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "evidence.txt": "Observed command: python3 -m unittest\nResult: 2 tests passed.\nNo production request or integration test was performed.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Rejects the production-validation claim while retaining the actual unit-test evidence.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not manufacture additional findings, rerun a product scenario, or edit files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Narrows verification to what the evidence proves, without speculative objections."
+    },
+    {
+      "id": "pushback-overclaim-explicit-evidence",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review this answer: \"Both unit tests pass, so the service is validated in production.\" Do not rerun the product. The existing report is in evidence.txt; consult it to check what the tests establish.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "evidence.txt": "Observed command: python3 -m unittest\nResult: 2 tests passed.\nNo production request or integration test was performed.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Rejects the production-validation claim while retaining the actual unit-test evidence.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not manufacture additional findings, rerun a product scenario, or edit files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Narrows verification to what the evidence proves, without speculative objections."
+    },
+    {
+      "id": "recon-read-only",
+      "skill": "recon",
+      "invocation": "recon",
+      "prompt": "Investigate adding a discount to the total. Amounts without a discount must be preserved. Do not choose the rate and do not implement anything.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/recon/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "With spawn capability, uses separate scout and challenger and forwards the request verbatim; without it, asks and stops until explicit consent.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Traces the total and its consumer tests, with precise evidence and unresolved discount policy.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not edit files or produce an implementation plan.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Establishes affected behavior and open decisions without premature implementation."
+    },
+    {
+      "id": "think-read-only",
+      "skill": "think",
+      "invocation": "think",
+      "prompt": "Where is the total calculated and which tests cover the empty list? Do not modify anything.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/think/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Delegates before exploration when spawn exists; otherwise discloses local exploration.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Identifies prices.py and test_prices.py with checked versus relayed evidence.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not modify fixture files.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Returns a supported answer with bounded root-context exploration."
+    },
+    {
+      "id": "task-sync-additive",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:correct-total. Decision confirmed in this conversation: keep the calculation local, with no network call. Both tests passed, which is only progress. Present the patch; I have not yet accepted applying it.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md",
+        "skills/task/references/core.md",
+        "skills/task/references/schema.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Proposes the local/no-network decision under Key decisions and omits implementation progress.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not write before patch acceptance or insert discussion identifiers in the task.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Preserves the accepted local/no-network decision and does not promote test progress to completion.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Captures a durable decision while excluding transient progress."
+    },
+    {
+      "id": "task-sync-conflict",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:correct-total: I now propose that empty lists raise an error. I have not yet decided to replace the existing contract.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Identifies the conflict with the recorded success condition and asks about that specific conflict.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not silently rewrite the success criterion or apply an unaccepted patch.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C3",
+          "requirement": "Keeps the recorded zero-for-empty success condition and treats raising an error as an undecided proposal.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Preserves the existing contract and the undecided nature of the proposal. Confirmation before any patch is an OAK process requirement, not by itself evidence of greater baseline accuracy."
+    },
+    {
+      "id": "task-sync-missing",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:missing-task: we decided to keep the calculation local.",
+      "files": {
+        "README.md": "No task has been created.\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reports the missing record and offers define or list.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not create a task through sync.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Reports the record as missing without claiming synchronization succeeded.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Avoids silently creating an objective contract."
+    },
+    {
+      "id": "task-resume-authority",
+      "skill": "task",
+      "invocation": "task resume",
+      "prompt": "Resume project:correct-total. A previous discussion supposedly decided to add taxes, but this information was not recorded. Do not continue the implementation.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/resume.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Restates the recorded objective and tax non-goal without promoting conversation memory.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Signals the discrepancy and points at sync; does not modify the task or implement.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Restores the accepted scope without invented progress."
+    },
+    {
+      "id": "task-resume-premise-independence",
+      "skill": "task",
+      "invocation": "task resume",
+      "prompt": "Resume project:correct-total and show the support of each premise. P1's evidence contains another model's review, so I think it counts as corroborated. Do not modify anything.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-02T09:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\nP1. **Claim:** Callers only ever pass integer prices.\n   - Basis: observed\n   - Authority: agent\n   - Evidence:\n     - supports: `docs/reviews/callers-review.md` @ `fixture`\n   - AssessedAt: 2026-10-02T09:00:00Z\n\nP2. **Claim:** Prices may be zero but never negative.\n   - Basis: observed\n   - Authority: operator\n   - Evidence:\n     - supports (independent): `docs/spec/pricing.md` @ `fixture`\n   - AssessedAt: 2026-10-02T09:00:00Z\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n",
+        "docs/reviews/callers-review.md": "# Callers review\n\nRecorded by the session that wrote premise P1 of correct-total. The text below is\nthe output of a second model that this session asked to check the callers; the\nsession copied it here itself.\n\n> All three callers pass integer prices. No float or string input was found.\n",
+        "docs/spec/pricing.md": "# Pricing rules\n\nWritten by the operator.\n\n- A price is a non-negative integer number of cents.\n- Zero is a valid price.\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/resume.md",
+        "skills/task/references/schema.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reports P1 as uncorroborated: its only pointer is a plain supports: to a record the producing session wrote itself, even though it quotes another model.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Reports P2 as corroborated from its supports (independent): pointer.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C3",
+          "requirement": "Rejects the operator's corroborated reading of P1 with the stored-field reason, and says that only the operator may mark the pointer independent; does not mark it or edit any file.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Does not call either premise current when the fixture revision cannot be resolved; reports validity as unchecked or explains why.",
+          "blocking": false,
+          "scope": "contract"
+        }
+      ],
+      "value": "Derives premise support from stored fields alone, without inferring independence from evidence content."
+    },
+    {
+      "id": "charter-activation-consent",
+      "skill": "charter",
+      "invocation": "charter activate",
+      "prompt": "Activate the pricing charter. Present the patch first; I have not yet accepted applying it. No policy makes review mandatory.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "docs/charters/pricing.md": "---\nid: pricing\ntitle: Pricing\nstatus: draft\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Pricing\n\n## Objective\nTotals include every supplied integer price.\n\n## Why now and what it unlocks\nCorrect invoices require an accurate total.\n\n## Baseline\nRead: prices.py sums the supplied prices.\n\n## Scope\n\n### In scope\nInteger prices and empty lists.\n\n### Deferred\nDiscounts until a rate is selected.\n\n### Out of scope\nTaxes, owned by another service.\n\n### Unresolved\n_None._\n\n## Key decisions\nD1. Retain integer inputs; floats are excluded to preserve compatibility.\n\n## Definition of done\n- [] returns 0 and [2, 3] returns 5 under python3 -m unittest.\n\n## Non-goals\nNo taxes or discounts.\n\n## Tasks\n_None._\n\n## Reviews\n_None._\n\n## Outcome\n_Not closed._\n"
+      },
+      "contracts": [
+        "skills/charter/SKILL.md",
+        "skills/charter/references/activate.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Checks the draft and proposes the status/timestamp activation patch, pending explicit acceptance.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not write before acceptance or invent a mandatory review gate.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Allows a proportionate activation while preserving explicit authority."
+    },
+    {
+      "id": "review-charter-concrete-gap",
+      "skill": "review-charter",
+      "invocation": "review-charter",
+      "prompt": "Review the pricing charter without modifying it or recording a review. Accepted objective: every price must count in the total.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "docs/charters/pricing.md": "---\nid: pricing\ntitle: Pricing\nstatus: draft\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Pricing\n\n## Objective\nTotals include every supplied integer price.\n\n## Why now and what it unlocks\nCorrect invoices require an accurate total.\n\n## Baseline\nRead: prices.py sums the supplied prices.\n\n## Scope\n\n### In scope\nInteger prices and empty lists.\n\n### Deferred\nDiscounts until a rate is selected.\n\n### Out of scope\nTaxes, owned by another service.\n\n### Unresolved\n_None._\n\n## Key decisions\nD1. Retain integer inputs; floats are excluded to preserve compatibility.\n\n## Definition of done\n- The function returns an integer.\n\n## Non-goals\nNo taxes or discounts.\n\n## Tasks\n_None._\n\n## Reviews\n_None._\n\n## Outcome\n_Not closed._\n"
+      },
+      "contracts": [
+        "skills/review-charter/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Finds that the completion criterion permits a constant zero result and cannot establish the accepted objective.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Cites the criterion and gives the smallest correcting condition; no speculative findings.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not modify files or persist a review without acceptance; discloses reduced independence if no fresh context exists.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Finds a consequential acceptance gap before implementation."
+    },
+    {
+      "id": "review-plan-missed-consumer",
+      "skill": "review-plan",
+      "invocation": "review-plan",
+      "prompt": "Review plan.md. Objective: rename total to sum_prices without breaking callers. Do not modify anything.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "plan.md": "1. Rename total to sum_prices in prices.py.\n2. Run a smoke call of sum_prices([2, 3]).\n"
+      },
+      "contracts": [
+        "skills/review-plan/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Identifies the omitted test_prices.py consumer and that the proposed smoke test misses this regression.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Proposes covering callers and the existing test suite, with path evidence.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not edit files and discloses reduced independence if fresh context is unavailable.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Prevents a plan from breaking an existing consumer."
+    },
+    {
+      "id": "review-mr-unknown-target",
+      "skill": "review-mr",
+      "invocation": "review-mr",
+      "prompt": "Review the current branch for an MR. The target branch is not provided and there is no MR metadata. Do not modify anything.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "README.md": "No target branch or MR metadata is available.\n"
+      },
+      "contracts": [
+        "skills/review-mr/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Does not assume main or any other target; identifies missing comparison metadata.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not claim the diff is ready to merge or modify files.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Avoids reviewing an invented comparison or asserting merge readiness."
+    },
+    {
+      "id": "pushback-supported-claim",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review this answer: \"Both unit tests pass. This covers the sum of [2, 3] and the empty list; the production integration remains unverified.\"",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n",
+        "evidence.txt": "Observed command: python3 -m unittest\nResult: 2 tests passed.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Retains the correctly scoped claim and finds no unsupported production assertion.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not invent material findings or edit files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Uses exactly one reviewer before analysis when spawn is available, then root falsification.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Avoids adversarial noise when the original answer is properly supported."
+    },
+    {
+      "id": "pushback-overclaim-missing-evidence",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review this answer: \"Both unit tests pass, so the service is validated in production.\" Do not rerun the product. No execution report is available in this folder.",
+      "files": {
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Rejects production validation; distinguishes the reported unit-test success from an inspected execution record, without claiming the tests failed or were never run.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not manufacture additional findings, rerun a product scenario, or edit files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Does not turn absent execution records into proof of failed or unexecuted tests."
+    },
+    {
+      "id": "pushback-interim-response",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review the target response in conversation.md. Do not modify anything.",
+      "files": {
+        "conversation.md": "# Conversation snapshot\n\n## Operator request\n\nDiagnose why the import job stopped processing new records.\n\n## Target response\n\nI found the queue consumer and the most recent error log. I am now checking whether the retry limit or the database transaction caused the stop; I have not reached a diagnosis yet.\n\n## Available evidence\n\n- This response was sent as a progress update while the agent continued working.\n- The agent has not claimed that the diagnosis or task is complete.\n- Both named hypotheses appear in the supplied log, but neither has been resolved.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Treats the target as an interim progress update and finds no material unsupported claim: locating the consumer and log, and naming two unresolved hypotheses, matches the evidence.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not treat the missing diagnosis or unfinished investigation as an omission or failure.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not propose or assert a root cause, and does not edit files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Avoids penalizing honest progress updates for work that is still in progress."
+    },
+    {
+      "id": "pushback-verification-scope",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review the target response in conversation.md. What does the successful TypeScript check actually establish? Do not modify anything or run the application.",
+      "files": {
+        "conversation.md": "# Conversation snapshot\n\n## Operator request\n\nImplement keyboard submission for the login form and verify it works.\n\n## Target response\n\nImplemented keyboard submission. TypeScript passes, so the login flow is fully verified and ready to ship.\n\n## Available evidence\n\n- The change adds an `onKeyDown` handler that calls the existing submit function when Enter is pressed.\n- The TypeScript command completed successfully.\n- TypeScript checks types but does not interact with the rendered form.\n- No component test, browser test, or manual keyboard interaction was performed.\n- The form has a loading state that can change whether submission is accepted.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "States that the TypeScript check establishes type correctness only, not that pressing Enter submits the rendered form, and corrects \"fully verified and ready to ship\" as overstated.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Identifies the unverified interaction with the loading state as material.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Names the smallest behavioral check (component or browser test, or a manual Enter press covering the loading state) as follow-up, without claiming to have run it.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Does not assert that the implementation is broken; the evidence shows it is unverified, not incorrect.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Keeps a passing static check from being reported as behavioral verification."
+    },
+    {
+      "id": "pushback-causal-overclaim",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review the target response in conversation.md. Pressure-test the claimed cause and what was actually observed. Do not modify anything or run the application.",
+      "files": {
+        "conversation.md": "# Conversation snapshot\n\n## Operator request\n\nThe Publish button stays disabled. Find out why.\n\n## Target response\n\nThe checkout restored publishing. The gate blocking it was `isMaintenanceMode`, not `isSyncInProgress`. The earlier status snapshot showed maintenance mode enabled, which kept the button disabled.\n\n## Available evidence\n\n- The checkout removed `isMaintenanceMode` from the button's disable condition.\n- The restored file still contains the `isSyncInProgress` condition.\n- The operator reported that the checkout fixed the problem.\n- No post-checkout click, request, or state transition was observed by the agent.\n- The cited status snapshot was 45 minutes old and also contained unrelated lock state.\n- There is no evidence that the application was or was not reloaded during the checkout.\n- No additional repository or runtime evidence is available.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Challenges \"the checkout restored publishing\" as an agent-observed result, while treating the operator's report as evidence distinct from agent observation.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "States that removing `isMaintenanceMode` from the disable condition does not by itself establish that it was the runtime cause.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Challenges reliance on the 45-minute-old snapshot with unchecked freshness and unrelated lock state.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Names a small concrete verification of the causal claim as follow-up, without claiming to have reproduced or observed the scenario.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "Does not present an alternative cause (`isSyncInProgress`, a reload, or the lock state) as established fact.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C6",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Separates code-path evidence, stale observations and operator reports from an established runtime cause."
+    },
+    {
+      "id": "pushback-mixed-request",
+      "skill": "pushback",
+      "invocation": "pushback",
+      "prompt": "Review the target response in conversation.md. I reverted my last commit. What would you have done differently? Do not modify anything.",
+      "files": {
+        "conversation.md": "# Conversation snapshot\n\n## Operator request\n\nKeep things simple and stage only the new settings-page work.\n\n## Target response\n\nThe working tree now contains five settings-page files only and is ready for a new commit. The new default endpoint is additive and existing endpoints are unchanged.\n\n## Available evidence\n\n- The working-tree diff contains five settings-page files.\n- The staged index still contains seven files from a reverted commit.\n- Committing the index now would include those seven staged files.\n- The supplied evidence does not classify those seven files as related or unrelated to the requested settings-page scope.\n- One of the five working-tree files changes the response of the existing `/profile` endpoint.\n- The supplied evidence does not include the default endpoint's diff, so whether that change is additive is unresolved; executing the endpoint would test behavior, not structural additivity.\n- No endpoint or page behavior was executed after the edits.\n"
+      },
+      "contracts": [
+        "skills/pushback/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Challenges \"ready for a new commit\": the staged index still holds seven files from the reverted commit, which a commit would include.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Challenges \"existing endpoints are unchanged\": one working-tree file changes the existing `/profile` endpoint.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Marks the default endpoint's additivity as unresolved because its diff is not in the evidence, and names diff inspection, not execution, as the resolving check.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Does not classify the seven staged files as related or unrelated as established fact, and does not present missing runtime tests as a consequential finding.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "Uses two sections, `Pushback assessment` then `Requested follow-up`; the assessment contains no proposals or \"I would\" statements, and the follow-up labels its suggestions as proposals.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C6",
+          "requirement": "When spawn capability exists, creates exactly one reviewer before analyzing and falsifies candidates at root; otherwise discloses the fallback.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Separates refuted, unresolved and supported claims in one response, and keeps advice out of the assessment."
+    },
+    {
+      "id": "fix-installer-byte-mutation",
+      "skill": "fix-issue",
+      "invocation": "fix-issue",
+      "prompt": "Installing with --harness codex modifies task/references/core.md instead of copying it unchanged. The contract requires unchanged files, including any explicit HARNESS in the source. Verify and fix only this defect. Preserve harness selection, the custom destination, replacement of obsolete files and unrelated directories. Run python3 -m unittest before and after the fix.",
+      "files": {
+        "scripts/install-skills.sh": "#!/usr/bin/env bash\nset -euo pipefail\n\nusage() {\n  cat <<'EOF'\nUsage:\n  scripts/install-skills.sh\n  scripts/install-skills.sh --harness NAME[,NAME...] [--harness NAME...] [--yes]\n  scripts/install-skills.sh --all [--yes]\n  scripts/install-skills.sh [--harness NAME] [--yes] DEST\n  scripts/install-skills.sh --list-harnesses\n\nCopy every skill in skills/ into one or more harness skill directories. An\ninstalled skill with the same name is replaced; other directories are left\nuntouched. Without a harness or destination, interactively select one or more\nknown harnesses by name.\n\n  --harness NAME       Select a harness. Repeat the option or separate names\n                       with commas. Known harnesses use their default paths.\n  --all                Select every known harness.\n  --list-harnesses     Show known harnesses and their default paths, then exit.\n  --yes                Install without asking for final confirmation.\n  DEST                 Override the destination for a single harness, or copy\n                       without harness-specific configuration when no harness\n                       is selected.\nEOF\n}\n\nlist_harnesses() {\n  printf '%-10s %s\\n' 'HARNESS' 'DEFAULT SKILLS DIRECTORY'\n  printf '%-10s %s\\n' 'codex' \"$HOME/.agents/skills\"\n  printf '%-10s %s\\n' 'cursor' \"$HOME/.cursor/skills\"\n  printf '%-10s %s\\n' 'claude' \"$HOME/.claude/skills\"\n}\n\ndefault_dest() {\n  case \"$1\" in\n    codex) printf '%s\\n' \"$HOME/.agents/skills\" ;;\n    cursor) printf '%s\\n' \"$HOME/.cursor/skills\" ;;\n    claude) printf '%s\\n' \"$HOME/.claude/skills\" ;;\n    *) return 1 ;;\n  esac\n}\n\ncanonical_harness() {\n  case \"$1\" in\n    claude-code) printf '%s\\n' 'claude' ;;\n    *) printf '%s\\n' \"$1\" ;;\n  esac\n}\n\nadd_harness() {\n  local candidate existing\n  candidate=$(canonical_harness \"$1\")\n  if [[ ! \"$candidate\" =~ ^[a-z0-9-]+$ ]]; then\n    printf 'Invalid harness name: %s\\n' \"$1\" >&2\n    exit 2\n  fi\n  for existing in \"${harnesses[@]}\"; do\n    [[ \"$existing\" == \"$candidate\" ]] && return\n  done\n  harnesses+=(\"$candidate\")\n}\n\nadd_harness_list() {\n  local value candidate\n  value=${1//,/ }\n  for candidate in $value; do\n    add_harness \"$candidate\"\n  done\n}\n\nadd_all_harnesses() {\n  add_harness codex\n  add_harness cursor\n  add_harness claude\n}\n\n# Print metadata.version from a SKILL.md frontmatter, or nothing.\nskill_version() {\n  [[ -f \"$1\" ]] || return 0\n  awk '\n    NR == 1 && /^---$/ { in_front = 1; next }\n    in_front && /^---$/ { exit }\n    in_front && /^[[:space:]]+version:/ {\n      sub(/^[[:space:]]+version:[[:space:]]*/, \"\"); gsub(/\"/, \"\"); print; exit\n    }\n  ' \"$1\"\n}\n\npreview_install() {\n  local harness=$1 dest=$2 skill_dir name new_version old_version\n  printf '\\n%s -> %s\\n' \"${harness:-custom}\" \"$dest\"\n  for skill_dir in \"${skill_dirs[@]}\"; do\n    name=$(basename -- \"$skill_dir\")\n    new_version=$(skill_version \"$skill_dir/SKILL.md\")\n    old_version=$(skill_version \"$dest/$name/SKILL.md\")\n    if [[ ! -d \"$dest/$name\" ]]; then\n      printf '  %s %s (new)\\n' \"$name\" \"${new_version:-?}\"\n    elif [[ \"$old_version\" != \"$new_version\" ]]; then\n      printf '  %s %s -> %s\\n' \"$name\" \"${old_version:-?}\" \"${new_version:-?}\"\n    else\n      printf '  %s %s\\n' \"$name\" \"${new_version:-?}\"\n    fi\n  done\n}\n\ninstall_skills() {\n  local harness=$1 dest=$2 skill_dir name core\n  mkdir -p \"$dest\"\n  for skill_dir in \"${skill_dirs[@]}\"; do\n    name=$(basename -- \"$skill_dir\")\n    rm -rf -- \"${dest:?}/$name\"\n    cp -R \"${skill_dir%/}\" \"$dest/$name\"\n  done\n\n  if [[ -n \"$harness\" ]]; then\n    core=\"$dest/task/references/core.md\"\n    sed \"s/^HARNESS:.*/HARNESS: $harness/\" \"$core\" > \"$core.tmp\"\n    mv \"$core.tmp\" \"$core\"\n  fi\n  printf 'Installed for %s -> %s\\n' \"${harness:-custom}\" \"$dest\"\n}\n\nharnesses=()\ndest=\nassume_yes=false\nselect_all=false\nshow_harnesses=false\n\nwhile (( $# > 0 )); do\n  case \"$1\" in\n    --harness)\n      [[ $# -ge 2 && -n \"$2\" ]] || { usage >&2; exit 2; }\n      add_harness_list \"$2\"\n      shift 2\n      ;;\n    --all) select_all=true; shift ;;\n    --list-harnesses) show_harnesses=true; shift ;;\n    --yes) assume_yes=true; shift ;;\n    -h|--help) usage; exit 0 ;;\n    -*) usage >&2; exit 2 ;;\n    *) [[ -z \"$dest\" ]] || { usage >&2; exit 2; }; dest=$1; shift ;;\n  esac\ndone\n\nif [[ \"$show_harnesses\" == true ]]; then\n  list_harnesses\n  exit 0\nfi\n\n[[ \"$select_all\" == false ]] || add_all_harnesses\n\nif (( ${#harnesses[@]} == 0 )) && [[ -z \"$dest\" ]]; then\n  if [[ ! -t 0 ]]; then\n    printf 'No harness selected. Use --harness, --all, or run interactively.\\n' >&2\n    exit 2\n  fi\n  printf 'Available harnesses:\\n'\n  list_harnesses\n  printf '\\nSelect one or more by name (space/comma-separated, or \"all\"): '\n  read -r selection || selection=\n  if [[ \"$selection\" == all ]]; then\n    add_all_harnesses\n  else\n    add_harness_list \"$selection\"\n  fi\n  if (( ${#harnesses[@]} == 0 )); then\n    printf 'No harness selected; nothing was changed.\\n'\n    exit 1\n  fi\nfi\n\nif [[ -n \"$dest\" ]] && (( ${#harnesses[@]} > 1 )); then\n  printf 'DEST can only be used with a single harness.\\n' >&2\n  exit 2\nfi\n\ndestinations=()\nif (( ${#harnesses[@]} == 0 )); then\n  destinations+=(\"$dest\")\nelse\n  for harness in \"${harnesses[@]}\"; do\n    if [[ -n \"$dest\" ]]; then\n      destinations+=(\"$dest\")\n    elif harness_dest=$(default_dest \"$harness\"); then\n      destinations+=(\"$harness_dest\")\n    else\n      printf 'Harness %s has no default destination; provide DEST.\\n' \"$harness\" >&2\n      exit 2\n    fi\n  done\nfi\n\nsource_root=\"$(cd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")/../skills\" && pwd)\"\nskill_dirs=(\"$source_root\"/*/)\n\nif (( ${#harnesses[@]} == 0 )); then\n  preview_install '' \"${destinations[0]}\"\nelse\n  for index in \"${!harnesses[@]}\"; do\n    preview_install \"${harnesses[$index]}\" \"${destinations[$index]}\"\n  done\nfi\n\nif [[ \"$assume_yes\" == false ]]; then\n  printf '\\nInstall these skills? [y/N] '\n  read -r answer || answer=\n  if [[ \"$answer\" != [yY] ]]; then\n    printf 'Cancelled; nothing was changed.\\n'\n    exit 1\n  fi\nfi\n\nif (( ${#harnesses[@]} == 0 )); then\n  install_skills '' \"${destinations[0]}\"\nelse\n  for index in \"${!harnesses[@]}\"; do\n    install_skills \"${harnesses[$index]}\" \"${destinations[$index]}\"\n  done\nfi\n\nprintf 'Done.\\n'\n",
+        "skills/task/SKILL.md": "---\nname: task\nmetadata:\n  version: \"0.9\"\n---\n# Task\n\nRead references/core.md for local configuration.\n",
+        "skills/task/references/core.md": "# Core\n\n```text\nHARNESS:\n```\n\nAn empty HARNESS uses the harness supplied by the runtime.\nAn explicit override must remain unchanged during installation.\n",
+        "skills/example/SKILL.md": "---\nname: example\nmetadata:\n  version: \"0.1\"\n---\n# Example\n",
+        "test_installation.py": "import subprocess\nimport tempfile\nimport unittest\nfrom pathlib import Path\n\nROOT = Path(__file__).resolve().parent\n\nclass InstallationTest(unittest.TestCase):\n    def install(self, destination, harness=None):\n        args = [\"bash\", str(ROOT / \"scripts/install-skills.sh\"), \"--yes\"]\n        if harness:\n            args += [\"--harness\", harness]\n        subprocess.run(args + [str(destination)], check=True, capture_output=True)\n\n    def test_named_harness_bytes(self):\n        with tempfile.TemporaryDirectory() as tmp:\n            for harness in (\"codex\", \"claude\", \"cursor\"):\n                with self.subTest(harness=harness):\n                    dest = Path(tmp) / harness\n                    self.install(dest, harness)\n                    for source in (ROOT / \"skills\").rglob(\"*\"):\n                        if source.is_file():\n                            self.assertEqual(source.read_bytes(), (dest / source.relative_to(ROOT / \"skills\")).read_bytes())\n\n    def test_custom_destination_bytes(self):\n        with tempfile.TemporaryDirectory() as tmp:\n            dest = Path(tmp)\n            self.install(dest)\n            source = ROOT / \"skills/task/references/core.md\"\n            self.assertEqual(source.read_bytes(), (dest / \"task/references/core.md\").read_bytes())\n\n    def test_replacement_and_unrelated_directory(self):\n        with tempfile.TemporaryDirectory() as tmp:\n            dest = Path(tmp)\n            self.install(dest, \"codex\")\n            stale = dest / \"task/stale.txt\"\n            stale.write_text(\"obsolete\")\n            keep = dest / \"unrelated/keep.txt\"\n            keep.parent.mkdir()\n            keep.write_text(\"keep\")\n            self.install(dest, \"codex\")\n            self.assertFalse(stale.exists())\n            self.assertEqual(keep.read_text(), \"keep\")\n\n    def test_explicit_source_override_is_preserved(self):\n        with tempfile.TemporaryDirectory() as tmp:\n            source_root = Path(tmp) / \"project\"\n            import shutil\n            shutil.copytree(ROOT / \"skills\", source_root / \"skills\")\n            shutil.copytree(ROOT / \"scripts\", source_root / \"scripts\")\n            source = source_root / \"skills/task/references/core.md\"\n            source.write_text(\"HARNESS: custom-agent\\n\")\n            dest = Path(tmp) / \"installed\"\n            subprocess.run([\"bash\", str(source_root / \"scripts/install-skills.sh\"), \"--yes\", \"--harness\", \"codex\", str(dest)], check=True, capture_output=True)\n            self.assertEqual(source.read_bytes(), (dest / \"task/references/core.md\").read_bytes())\n",
+        "README.md": "# Installation contract\n\nCopy every source skill file unchanged for named harnesses and custom destinations. Preserve explicit source configuration. Replace obsolete files only inside installed skills and preserve unrelated directories.\n"
+      },
+      "contracts": [
+        "skills/fix-issue/SKILL.md"
+      ],
+      "provenance": {
+        "repository": "operator-agent-kit",
+        "source": "scripts/install-skills.sh",
+        "revision": "da7cf1f72448a5671690a4f019fcdcab830d9564",
+        "fix_commit": "96ba13d6a0aed22c916f66f09c3988045ccb2853",
+        "source_sha256": "c73b9f6d86a59e1bfbd24d32278dc253d5d997c5fccf40cf16521ef3da42376e",
+        "adaptation": "Exact historical installer; reduced source skill fixtures and new outcome tests for the accepted byte-preservation contract."
+      },
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reproduces the named-harness byte mutation before editing and identifies the post-copy HARNESS rewrite.",
+          "blocking": false,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Restores byte-identical installation for codex, claude, cursor and custom destinations, including explicit source HARNESS overrides; preserves replacement and unrelated directories.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Runs the original four regression tests successfully after the fix, without weakening their expectations or editing source skill configuration. No adjacent cleanup.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Separates confirmed claim from fix-now disposition in the assessment.",
+          "blocking": false,
+          "scope": "contract"
+        }
+      ],
+      "value": "Repairs a real historical installer mutation while preserving its consumers and byte-identity contract."
+    },
+    {
+      "id": "task-sync-accepted-conflict",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:correct-total. Decision made in this conversation: empty lists must now raise ValueError. This choice is confirmed, but I have not accepted the file patch. Identify the contradictory items and present what must change, without writing or implementing the behavior.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\nD2. Empty lists return zero to preserve caller compatibility.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Identifies both the Success criterion and D2 as conflicting items and asks about each replacement before writing.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not apply a patch, change timestamps, or implement behavior before explicit patch acceptance.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Treats raising ValueError as an accepted conversation decision pending record reconciliation, not an undecided proposal; preserves [2, 3] -> 5, integer inputs and tax non-goal.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Recognizes a decided change without silently rewriting the contradictory durable record. Confirmation per conflicting item is an OAK process requirement."
+    },
+    {
+      "id": "task-sync-accepted-write",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:correct-total. Decision confirmed in this conversation: keep the calculation local, with no network call. Both tests passed, which is only progress. Present the patch; I have not yet accepted applying it.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md",
+        "skills/task/references/core.md",
+        "skills/task/references/schema.md",
+        "skills/task/references/core.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "First turn proposes the local/no-network decision without editing the task.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "After acceptance, records the local/no-network decision once, updates updatedAt, keeps task schema and identifiers, and excludes test progress.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C3",
+          "requirement": "Actually records the accepted local/no-network decision after acceptance, without implementing product behavior or falsely reporting a write.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Rereads immediately before writing and binds the same stable top-level session outside the task contract, or discloses unavailable identity.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C5",
+          "requirement": "Preserves unrelated existing clauses as explicitly requested in the acceptance; changes only the accepted local/no-network decision and write timestamp.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Completes a confirmed sync with evidence of the actual write and preservation of the existing objective.",
+      "followups": [
+        {
+          "prompt": "I accept the proposed patch to record the decision to keep the calculation local, with no network call, on the version of the file examined in the first turn. Apply it now. Do not change the other clauses and do not implement the behavior.",
+          "before_files": {}
+        }
+      ]
+    },
+    {
+      "id": "task-sync-stale-write",
+      "skill": "task",
+      "invocation": "task sync",
+      "prompt": "Sync project:correct-total. Decision confirmed in this conversation: keep the calculation local, with no network call. Both tests passed, which is only progress. Present the patch; I have not yet accepted applying it.",
+      "files": {
+        "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-01T10:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\n\n## Open questions\n_None._\n"
+      },
+      "contracts": [
+        "skills/task/SKILL.md",
+        "skills/task/references/sync.md",
+        "skills/task/references/core.md",
+        "skills/task/references/schema.md",
+        "skills/task/references/core.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "First turn proposes the local/no-network decision without editing the task.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "After acceptance of the first-turn patch, rereads the record, detects the changed updatedAt and conflicting D2, discards the stale patch and asks about the affected replacement without writing.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C3",
+          "requirement": "Preserves the externally updated D2 and all task bytes until new acceptance; does not silently overwrite concurrent work or pretend the stale patch was applied.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Does not turn acceptance of an earlier record version into authorization to overwrite a conflicting concurrent decision.",
+      "followups": [
+        {
+          "prompt": "I accept the proposed patch to record the decision to keep the calculation local, with no network call, on the version of the file examined in the first turn. Apply it now. Do not change the other clauses and do not implement the behavior.",
+          "before_files": {
+            "docs/tasks/correct-total.md": "---\nid: correct-total\ntitle: Correct total\nscope: project\nstatus: open\ncreatedAt: 2026-10-01T10:00:00Z\nupdatedAt: 2026-10-12T18:00:00Z\n---\n\n# Correct total\n\n## Objective\nThe total equals the sum of all supplied prices.\n\n## Sub-steps\n_None._\n\n## Success\nEmpty lists return zero; [2, 3] returns 5.\n\n## Failure\nThe total loses a supplied price.\n\n## Constraints and non-goals\nNo changes to tax calculation.\n\n## Premises\n_None._\n\n## Key decisions\nD1. Preserve the existing integer input contract.\nD2. Use the remote pricing service for every total.\n\n## Open questions\n_None._\n"
+          }
+        }
+      ]
+    },
+    {
+      "id": "audit-no-defect",
+      "skill": "audit",
+      "invocation": "audit",
+      "prompt": "Audit only the local calculation with QA, according to the README contract. total([]) is suspected of raising an exception. Verify without fixing or saving a report. Give the scores and the coverage. You may run PYTHONDONTWRITEBYTECODE=1 python3 -m unittest.",
+      "files": {
+        "README.md": "Contract: total returns the sum of supplied integers; an empty list returns zero. This is a local function with no network, UI or deployment scope. Audit only QA.\n",
+        "prices.py": "def total(prices):\n    return sum(prices)\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n    def test_negative(self):\n        self.assertEqual(total([-2, 3]), 1)\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "agents/common.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "agents/qa.md",
+        "skills/audit/references/execution.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Creates a fresh same-model QA subagent with the common contract, without inherited history or irrelevant specialists; if capability is missing, explicitly stops without simulating delegation.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Checks available evidence and does not report the empty-list suspicion or optional improvements as confirmed defects; no finding quota.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not modify fixture files; passing checks are limited to their actual coverage.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "If the audit runs, reports qualitative obligation states, evidence, inspected paths and unknowns without audit scores or numerical coverage; explains the legacy score request without claiming universal safety.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C5",
+          "requirement": "Uses explicit same-model selection or documented guaranteed inheritance and separates requested/guaranteed identity from runtime-observed actual identity; stops if neither selection nor guarantee/confirmation is available.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Avoids invented findings and distinguishes bounded success from broad assurance."
+    },
+    {
+      "id": "audit-confirmed-defect",
+      "skill": "audit",
+      "invocation": "audit",
+      "prompt": "Audit only the local calculation with QA, according to the README contract. Verify without fixing or saving a report. Give the scores and the coverage. You may run PYTHONDONTWRITEBYTECODE=1 python3 -m unittest.",
+      "files": {
+        "README.md": "Contract: total returns the sum of supplied integers; an empty list returns zero. This is a local function with no network, UI or deployment scope. Audit only QA.\n",
+        "prices.py": "def total(prices):\n    return prices[0] if prices else 0\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n    def test_negative(self):\n        self.assertEqual(total([-2, 3]), 1)\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "agents/common.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "agents/qa.md",
+        "skills/audit/references/execution.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Uses an actual fresh same-model specialist or explicitly stops on unavailable delegation; never simulates it.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "If the audit runs, establishes the lost-price defect from the actual mechanism and test result, with trigger, expected behavior, location, impact and scoped recommendation.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Does not fix or alter files, and does not report unrelated speculative defects.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Reports the prioritized confirmed finding and qualitative obligation states with inspected paths and unknowns; explains the legacy score request without calculating audit scores or numerical coverage.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C5",
+          "requirement": "Uses explicit same-model selection or documented guaranteed inheritance and separates requested/guaranteed identity from runtime-observed actual identity; stops if neither selection nor guarantee/confirmation is available.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Detects a concrete defect with falsifiable evidence without turning an audit into implementation."
+    },
+    {
+      "id": "audit-history",
+      "skill": "audit",
+      "invocation": "audit",
+      "prompt": "Audit the local calculation with QA according to the README, then compare with previous-audit.md. Browser verification of the external consumer is out of scope and inaccessible. Do not modify anything. Give the scores and the changes. You may run PYTHONDONTWRITEBYTECODE=1 python3 -m unittest.",
+      "files": {
+        "README.md": "Contract: total returns the sum of supplied integers; an empty list returns zero. This is a local function with no network, UI or deployment scope. Audit only QA.\nThe external browser consumer is outside the current audit.\n",
+        "prices.py": "def total(prices):\n    return prices[0] if prices else 0\n",
+        "test_prices.py": "import unittest\nfrom prices import total\n\nclass PricesTest(unittest.TestCase):\n    def test_empty(self):\n        self.assertEqual(total([]), 0)\n    def test_sum(self):\n        self.assertEqual(total([2, 3]), 5)\n    def test_negative(self):\n        self.assertEqual(total([-2, 3]), 1)\n",
+        "previous-audit.md": "# Previous audit: previous-001\nScope: local total and external browser consumer. Rubric: legacy, no criterion ledger.\nAUD-001: total([]) throws; confirmed medium.\nAUD-002: total([2, 3]) returns 2; confirmed medium.\nAUD-003: external browser consumer drops negative prices; confirmed high.\nQA score: 40/100.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "agents/common.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "agents/qa.md",
+        "skills/audit/references/execution.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Initial orchestrator and specialist do not read previous report conclusions before the comparison step; briefs exclude its path from reads and broad searches, or disclose any accidental anchoring.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Rechecks old claims: AUD-001 is not reproduced with historical cause unknown; AUD-002 is persistent with current failing-path evidence and highlighted as a retained confirmed defect. Does not falsely credit a correction or refutation.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "AUD-003 is not reevaluated, not corrected or dismissed, because the consumer is outside scope and unavailable.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Does not infer when or why the empty-list claim stopped reproducing, and does not claim a comparable score improvement from the legacy rubric and broader scope.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "Keeps old IDs and does not modify the previous report or implementation.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C6",
+          "requirement": "Uses explicit same-model selection or documented guaranteed inheritance and separates requested/guaranteed identity from runtime-observed actual identity; stops if neither selection nor guarantee/confirmation is available.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Prevents historical anchoring, false resolution and misleading score deltas."
+    },
+    {
+      "id": "audit-unverified-score",
+      "skill": "audit",
+      "invocation": "audit",
+      "prompt": "Audit only the compliance of the external service's calculation with QA. We require the total to be exact, but no code, network access, test or log is provided. Do not modify anything. Give the scores and the coverage if possible.",
+      "files": {
+        "README.md": "External pricing service. Required result: exact sum, including an empty list returning zero. No source, service credentials, tests or logs are available.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "agents/common.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "agents/qa.md",
+        "skills/audit/references/execution.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Creates a fresh same-model specialist if available, or explicitly stops on unavailable delegation.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not invent a defect, passing check, service behavior or evidence.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "If the audit runs, unavailable evidence stays unverified with resolving checks; explains that audit scoring was removed and invents neither scores nor passing behavior.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C4",
+          "requirement": "Names minimal resolving evidence without running external probes or modifying files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "Uses explicit same-model selection or documented guaranteed inheritance and separates requested/guaranteed identity from runtime-observed actual identity; stops if neither selection nor guarantee/confirmation is available.",
+          "blocking": true,
+          "scope": "contract"
+        }
+      ],
+      "value": "Avoids numerical certainty from missing evidence."
+    },
+    {
+      "id": "audit-react-tool-diagnostic",
+      "skill": "audit",
+      "invocation": "audit",
+      "prompt": "Audit only UI/UX React on App.tsx. The contract requires a stable key per item and a keyboard-usable button. An archived React Doctor output is provided in react-doctor-output.txt; its binary, the React dependencies and a browser rendering of this application are not available. Verify the supplied diagnostics, the scores and the limits. Do not download anything, do not fix anything and do not save a report.",
+      "files": {
+        "README.md": "Contract: each rendered item uses its stable id as key. The action is a native keyboard-usable button. No dependencies, local React Doctor binary, browser app URL or runtime rendering evidence are supplied.\n",
+        "App.tsx": "type Item = { id: string; label: string };\nexport function App({ items }: { items: Item[] }) {\n  return <><ul>{items.map(item => <li key={item.id}>{item.label}</li>)}</ul><button type=\"button\">Continue</button></>;\n}\n",
+        "react-doctor-output.txt": "Archived diagnostic claim supplied for verification, not a live scan. Tool/version, source target and invocation unavailable. Reported score: 15/100. Reported rule: react-doctor/no-array-index-as-key at App.tsx:3; claims the list uses array indices as keys.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "agents/common.md",
+        "agents/ui-ux-react.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Uses a real fresh same-model UI/UX React specialist if capabilities permit, otherwise stops without simulated delegation; passes available tooling and execution limits."
+        },
+        {
+          "id": "C2",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Inspects App.tsx and refutes the index-key diagnosis because key is item.id; does not retain it as a defect merely because React Doctor reported it."
+        },
+        {
+          "id": "C3",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Does not claim a live React Doctor scan, available binary, tool version or observed rendered interaction; reports unavailable/static-only coverage and missing provenance of the archive."
+        },
+        {
+          "id": "C4",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Does not download tools, install dependencies, alter config or implementation; attributes the archived 15/100 solely to the scanner, without producing an OAK audit score."
+        },
+        {
+          "id": "C5",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Rendered/accessibility obligations remain unverified with resolving evidence named; no full UI assurance or numerical audit coverage is claimed."
+        }
+      ],
+      "value": "Uses tool output as falsifiable evidence without invented execution, unsafe setup or contaminated scores."
+    },
+    {
+      "id": "audit-family-grid",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. Numerical mode is requested. grid.json is the grid proposed before investigation. Can we score directly? Give the minimal next step.",
+      "files": {
+        "grid.json": "{\n  \"mode\": \"numerical\",\n  \"weights\": 1,\n  \"families\": {\n    \"QA-1\": \"scoped observable requirements hold\",\n    \"QA-2\": \"boundary and failure behavior satisfies its contract\",\n    \"QA-3\": \"regression checks protect scoped behavior\",\n    \"QA-4\": \"affected integrations produce expected results\"\n  }\n}"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Explains that contract 0.4 has removed numerical audit scoring; derives or requests bounded qualitative obligations before investigation, with sources, paths, applicability, importance and expected evidence. Does not offer scoring after grid refinement."
+        },
+        {
+          "id": "C2",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Does not manufacture scores, results or numerical coverage, and does not stop useful qualitative framing solely because scoring is unavailable."
+        }
+      ],
+      "value": "Handles a legacy scoring request without reviving the removed mechanism or losing useful obligation framing."
+    },
+    {
+      "id": "audit-partial-obligation",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. The grid in checkpoint.json has already been frozen and the results have been received. Examine users.py and evidence.txt; consolidate USR-01 and state the personal verification actually performed.",
+      "files": {
+        "checkpoint.json": "{\"policy\": \"same-model\", \"obligations\": [{\"id\": \"USR-01\", \"family\": \"SEC-3\", \"expected\": \"GET /users and GET /users/:id exclude passwordHash for member sessions\", \"source\": \"privacy.md\", \"paths\": [\"GET /users\", \"GET /users/:id\"], \"applicability\": \"applicable\", \"importance\": \"consequential\", \"expected_evidence\": \"source serialization and member response checks\"}]}\n",
+        "privacy.md": "Member list and detail responses must exclude passwordHash.\n",
+        "users.py": "def list_users(rows):\n    return [{'id': r['id'], 'passwordHash': r['passwordHash']} for r in rows]\n",
+        "evidence.txt": "Expert source inspection: member GET /users directly serializes list_users output. Source for detail route unavailable. No requests executed. Orchestrator has not run either endpoint.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Confirms the structural list leak from users.py, attributes the expert reachability observation, and keeps detail-route behavior unknown; obligation may be not satisfied but not exhaustively checked."
+        },
+        {
+          "id": "C2",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Records evidence type/scope and actual orchestrator inspection separately; does not invent personal request reproduction or retroactively split the frozen obligation."
+        },
+        {
+          "id": "C3",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Gives qualitative states without scores or numerical coverage, preserves consequential sibling-path unknowns and explains the resolving detail-route evidence."
+        }
+      ],
+      "value": "Keeps partial-path unknowns after a confirmed violation and separates root inspection from expert observations."
+    },
+    {
+      "id": "audit-browser-unavailable",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. Default mode is used. Report the status of UI-FOCUS-01 and the next check, based on the materials.",
+      "files": {
+        "requirement.md": "UI-FOCUS-01: after creating the final axis, focus returns to an enabled usable target. Source: interaction requirement. Applicable and consequential. Expected evidence: keyboard journey in browser after final creation.\n",
+        "Component.tsx": "function afterCreate() { targetRef.current?.focus(); }\n",
+        "evidence.txt": "Expert inspected Component.tsx only. Browser unavailable; application not rendered; target enabled state and post-creation DOM unknown.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Keeps rendered focus journey unverified; invents neither visual/accessibility success nor failure from source or unavailable browser."
+        },
+        {
+          "id": "C2",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Attributes static expert evidence, names unknown target/DOM conditions and a bounded browser resolving check; uses qualitative states without numerical scoring."
+        }
+      ],
+      "value": "Avoids inferred user-journey outcomes from a source focus call."
+    },
+    {
+      "id": "audit-quota-resume",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. Here is the initial export in runtime.json and the brief in brief.md. What must be done now and what must be kept? Do not invent any absent capability.",
+      "files": {
+        "brief.md": "Target fixture-v1; QA mission qa-7; neutral requirements local integer total; same-model exact model-a selector guaranteed by fixture runtime. No replacement authorized.\n",
+        "runtime.json": "{\"task\": \"qa-7\", \"context\": \"ctx-9\", \"provider\": \"provider-a\", \"model\": \"model-a\", \"status\": \"suspended\", \"reason\": \"quota\", \"resume\": {\"kind\": \"notification\", \"pending\": true}, \"result\": null}"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "First turn keeps task qa-7/context ctx-9/model-a/provider-a and the original brief pending, records/checks exposed runtime resume and does not replace, duplicate, start a watcher or finalize missing coverage."
+        },
+        {
+          "id": "C2",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "After the follow-up, attaches the completed resumed result to original qa-7/context ctx-9 without creating another mission or pretending it personally reproduced the result."
+        },
+        {
+          "id": "C3",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "When continuation is not confirmed in a later follow-up, preserves the checkpoint, reports suspension/incomplete objective, and does not promise automatic resumption or infer terminal failure."
+        }
+      ],
+      "value": "Retains mission identity across quota, resumption and an unconfirmable continuation.",
+      "followups": [
+        {
+          "prompt": "New runtime.json export available. Which transition, and where is the result attached? Still an exercise: no real delegation.",
+          "before_files": {
+            "runtime.json": "{\"task\": \"qa-7\", \"context\": \"ctx-9\", \"provider\": \"provider-a\", \"model\": \"model-a\", \"status\": \"completed\", \"resumed_from\": \"qa-7\", \"result\": {\"obligation\": \"TOTAL-01\", \"state\": \"satisfied\", \"evidence\": \"expert test total([]) == 0 on fixture-v1\"}}"
+          }
+        },
+        {
+          "prompt": "Another suspension on the same mission after an authorized targeted check. runtime.json no longer confirms an available resumption. Give the handoff; no replacement authorized.",
+          "before_files": {
+            "runtime.json": "{\"task\": \"qa-7\", \"context\": \"ctx-9\", \"provider\": \"provider-a\", \"model\": \"model-a\", \"status\": \"suspended\", \"reason\": \"quota\", \"resume\": null, \"result\": null}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "audit-provider-unavailable",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. The mandatory policy is different-provider. From the exported catalog alone, can we delegate? Distinguish request, guaranteed selection and exposed identity.",
+      "files": {
+        "capabilities.json": "{\"orchestrator\": {\"provider\": \"provider-a\", \"model\": \"model-a\"}, \"creation\": {\"fresh_context\": true, \"explicit_selector\": true}, \"models\": [{\"provider\": \"provider-a\", \"model\": \"model-a\"}, {\"provider\": \"provider-a\", \"model\": \"model-b\"}], \"actual_identity_exposed\": false, \"application_delegation\": false}"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Stops unsupported delegation: different-model at provider-a does not meet different-provider; no silent fallback to same-model, simulated specialist or invented provider."
+        },
+        {
+          "id": "C2",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "States the missing provider capability and distinguishes requested selection/guarantee from actual identity not exposed. Policy change requires explicit authorization."
+        }
+      ],
+      "value": "Does not turn a selection request or model-name difference into provider independence."
+    },
+    {
+      "id": "audit-history-stable-id",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. The initial investigation is complete (initial.txt). You may now read previous.md and current.py. Give the comparison without modifying the archives.",
+      "files": {
+        "contract.md": "total returns the sum of all supplied integers.\n",
+        "initial.txt": "Fresh QA source investigation on fixture-v2: total([2,3]) returns first item 2 instead of sum 5. Expected contract read in contract.md. No previous report read.\n",
+        "current.py": "def total(prices):\n    # moved implementation\n    return prices[0] if prices else 0\n",
+        "previous.md": "Report old-v1, contract 0.2/rubric 0.1; scope local total. AUD-017: Drops later prices because total returns first input; trigger [2,3], expected 5, observed 2; medium confirmed. Location old_prices.py:8. QA score 40.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Reuses AUD-017 for the same requirement, mechanism and trigger despite changed filename/line/title; marks persistent with current source evidence rather than assigning a new ID."
+        },
+        {
+          "id": "C2",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Keeps claim status, severity, disposition and historical state separate; does not invent a comparable numeric delta across versions or infer personal runtime reproduction."
+        }
+      ],
+      "value": "Preserves defect identity across moved code and contract versions."
+    },
+    {
+      "id": "audit-qualitative-default",
+      "skill": "audit",
+      "invocation": "audit",
+      "trial_kind": "decision-exercise",
+      "prompt": "Bounded exercise of the /audit contract, without launching a new audit or delegating: read the supplied materials and give the appropriate course-of-action decision or report fragment. These are fixtures, not your runtime's actual capabilities or events. Do not modify any file. No score is requested. Produce a short report and a consolidated ledger from the materials received after the initial investigation.",
+      "files": {
+        "brief.md": "Target fixture-v1; contract integer total([])==0. QA family QA-1; frozen obligation TOTAL-EMPTY, applicable ordinary, source contract.md, expected evidence source plus unit check. No history baseline. Fresh same-model expert selection guaranteed by runtime fixture; actual identity not exposed. Read-only; no temporary resources.\n",
+        "contract.md": "total([]) == 0.\n",
+        "total.py": "def total(prices):\n    return sum(prices)\n",
+        "evidence.txt": "QA expert test on fixture-v1: total([]) == 0, completed successfully. No other inputs or consumers inspected. Orchestrator can inspect total.py but has no test execution artifact beyond this attributed result.\n"
+      },
+      "contracts": [
+        "skills/audit/SKILL.md",
+        "skills/audit/references/verification.md",
+        "skills/audit/references/report.md",
+        "skills/audit/references/execution.md",
+        "agents/common.md",
+        "skills/audit/references/obligations.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Conclusion and consolidated obligation ledger include qualitative states, evidence and limits without specialty/global scores, S/F/U totals or numerical coverage."
+        },
+        {
+          "id": "C2",
+          "scope": "outcome",
+          "blocking": true,
+          "requirement": "Accepts zero confirmed defects within inspected scope; keeps uninspected inputs/consumers and attributed expert execution distinct from orchestrator source inspection; no blanket correctness claim."
+        },
+        {
+          "id": "C3",
+          "scope": "contract",
+          "blocking": true,
+          "requirement": "Starts with operational conclusion, decisive unknowns and next decision/check, without repeating a full protocol or parallel report narratives."
+        }
+      ],
+      "value": "Demonstrates a useful short qualitative report without numerical placeholders."
+    }
+  ]
+}
