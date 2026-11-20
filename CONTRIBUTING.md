@@ -20,6 +20,10 @@ the proposal.
 
 ## Maintainer checks
 
+GitHub Actions runs these checks on every pull request and on `main`
+([`checks.yml`](.github/workflows/checks.yml)). Local private terms are not
+available there, so run the checks locally too before pushing.
+
 - Run the fast checks listed in [`tests/skills/README.md`](tests/skills/README.md#run-the-fast-checks).
   They include `scripts/check-private-data.py`, which flags email addresses,
   home directory paths, and credential formats, plus any terms listed in a
