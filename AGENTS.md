@@ -44,3 +44,5 @@ apply to projects that install OAK skills; those follow their own rules.
 - Build examples and fixtures from invented, generic cases.
 - Before proposing a commit, review the diff for such data and report what
   was checked.
+- `scripts/check-private-data.py` runs with the fast checks and catches
+  common patterns only; it does not replace that review.

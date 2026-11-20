@@ -39,6 +39,7 @@ python3 -m pip install -r tests/skills/requirements.txt
 python3 scripts/test-skills.py
 python3 scripts/test-skills.py --list
 python3 -m unittest discover -s tests/install
+python3 -m unittest discover -s tests/repo
 ```
 
 `tests/install/` covers installer safety: collisions, copy and backup failures,

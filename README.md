@@ -54,6 +54,20 @@ workflow. It recommends what to invoke next without running it for you.
 Additional components will be introduced only when their purpose and
 implementation are established.
 
+## Contributing
+
+OAK is public: keep private data out of files, examples, commits, and pull
+requests. [`AGENTS.md`](AGENTS.md) holds the rules for agents editing OAK.
+`scripts/check-private-data.py` looks for email addresses, home directory
+paths, and credential formats, plus any terms listed in a local file kept
+outside the repository (`~/.config/oak/private-terms.txt`, or the path in
+`OAK_PRIVATE_TERMS`). It runs with `scripts/test-skills.py`. To run it on
+every commit, enable the bundled hook once per clone:
+
+```sh
+git config core.hooksPath .githooks
+```
+
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
