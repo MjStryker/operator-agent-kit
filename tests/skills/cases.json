@@ -629,6 +629,42 @@
       "value": "Avoids reviewing an invented comparison or asserting merge readiness."
     },
     {
+      "id": "review-mr-project-rule",
+      "skill": "review-mr",
+      "invocation": "review-mr",
+      "prompt": "Review the change in change.diff for an MR. Its target is main and change.diff is the complete diff against it. Do not modify anything.",
+      "files": {
+        "AGENTS.md": "# Project rules\n\n- Money amounts are integer cents everywhere. Never convert them to float.\n",
+        "prices.py": "def total(prices):\n    return sum(prices)\n\n\ndef average(prices):\n    return float(sum(prices)) / len(prices) if prices else 0.0\n",
+        "test_prices.py": "import unittest\nfrom prices import average, total\n\nclass PricesTest(unittest.TestCase):\n    def test_sum(self):\n        self.assertEqual(total([200, 300]), 500)\n    def test_average(self):\n        self.assertEqual(average([200, 300]), 250.0)\n",
+        "change.diff": "--- a/prices.py\n+++ b/prices.py\n@@ -1,2 +1,6 @@\n def total(prices):\n     return sum(prices)\n+\n+\n+def average(prices):\n+    return float(sum(prices)) / len(prices) if prices else 0.0\n--- a/test_prices.py\n+++ b/test_prices.py\n@@ -1,6 +1,8 @@\n import unittest\n-from prices import total\n+from prices import average, total\n \n class PricesTest(unittest.TestCase):\n     def test_sum(self):\n         self.assertEqual(total([200, 300]), 500)\n+    def test_average(self):\n+        self.assertEqual(average([200, 300]), 250.0)\n"
+      },
+      "contracts": [
+        "skills/review-mr/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Reports that average() returns a float money amount, contrary to the integer-cents rule, and cites AGENTS.md as the source of that rule.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C2",
+          "requirement": "Does not claim the change is ready to merge or modify files.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Lists the project documents read, including AGENTS.md.",
+          "blocking": false,
+          "scope": "contract"
+        }
+      ],
+      "value": "Catches a change that passes its own tests but breaks a rule the project wrote down."
+    },
+    {
       "id": "pushback-supported-claim",
       "skill": "pushback",
       "invocation": "pushback",
