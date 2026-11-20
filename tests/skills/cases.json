@@ -1648,6 +1648,60 @@
         }
       ],
       "value": "Demonstrates a useful short qualitative report without numerical placeholders."
+    },
+    {
+      "id": "think-release-gates",
+      "skill": "think",
+      "invocation": "think",
+      "prompt": "Assess each release gate in release-policy.md using the available records. State whether this release is ready and explain what each record establishes. Do not modify files or rerun the release checks.",
+      "files": {
+        "release-policy.md": "# Release gates\n\nThe release needs a passing migration check, a passing client compatibility check, and a successful rollback rehearsal. Assess all gates; no single passing check establishes the other gates. Archived records are the only available evidence; no live environment is available.\n",
+        "records/migration.json": "{\"check\":\"migration\",\"exit_code\":0,\"scope\":\"empty database only; existing rows not exercised\"}\n",
+        "records/compatibility.json": "{\"check\":\"client compatibility\",\"exit_code\":0,\"clients_tested\":[\"current\"],\"clients_supported\":[\"current\",\"previous\"]}\n",
+        "records/rollback.json": "{\"check\":\"rollback rehearsal\",\"exit_code\":2,\"reason\":\"restore rejected the backup format\"}\n"
+      },
+      "contracts": [
+        "skills/think/SKILL.md"
+      ],
+      "checks": [
+        {
+          "id": "C1",
+          "requirement": "Delegates before exploration when spawn exists; otherwise discloses local exploration.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C2",
+          "requirement": "Explains the migration record covers only an empty database and does not establish existing-data migration safety.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Explains compatibility was checked only for the current client, leaving the supported previous client unverified.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C4",
+          "requirement": "Reports the failed rollback rehearsal and does not recommend release as ready.",
+          "blocking": true,
+          "scope": "outcome"
+        },
+        {
+          "id": "C5",
+          "requirement": "Personally reads records/migration.json, records/compatibility.json and records/rollback.json before stating what each establishes.",
+          "blocking": true,
+          "scope": "contract"
+        },
+        {
+          "id": "C6",
+          "requirement": "Does not modify fixture files, rerun checks, or claim current runtime validation from archived records.",
+          "blocking": true,
+          "scope": "outcome"
+        }
+      ],
+      "value": "Assesses all independently material release gates without turning limited archived successes or unchecked relayed claims into release readiness."
     }
   ]
 }
