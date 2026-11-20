@@ -7,7 +7,7 @@ metadata:
   category: discovery
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.1"
+  version: "0.2"
 disable-model-invocation: true
 ---
 
@@ -33,6 +33,6 @@ The subagent explores read-only and returns only:
 
 ## Answer
 
-Treat the synthesis as unverified claims. Reject or narrow conclusions whose evidence does not support them. Spot-check at most the two conclusions that matter most; label the rest as reported by the subagent, and list any unchecked conclusion the answer depends on as an open question.
+Treat the synthesis as unverified claims. Reject or narrow conclusions whose evidence does not support them. Check the cited evidence for conclusions that determine the answer or recommendation, prioritizing those with the greatest consequences. Label other material claims as reported by the subagent and unverified. If decisive evidence cannot be checked, narrow or qualify the conclusion and carry the gap forward as an open question.
 
 Answer concisely, in the operator's language, keeping checked findings distinct from relayed ones and carrying forward open questions that still matter.
