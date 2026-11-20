@@ -7,7 +7,7 @@ metadata:
   category: review
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.1"
+  version: "0.2"
 disable-model-invocation: true
 ---
 
@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 Review only. Do not edit the plan or project files unless the user asks for revisions after the review.
 
-Use a fresh subagent or context when available and authorized. Give the reviewer only the requested outcome, approved requirements and non-goals, accepted limitations, the proposed plan, and repository access or directly relevant references. If fresh-context review is unavailable, disclose that the review is less independent.
+Use a fresh subagent or context when available and authorized. Prefer a reviewer model from a different family than the author's, unless the user names the reviewer model or project policy sets one; if only the author's family is available, say so. Where reasoning effort can be set, do not use a low level: use at least medium, and prefer high. Give the reviewer only the requested outcome, approved requirements and non-goals, accepted limitations, the proposed plan, and repository access or directly relevant references. If fresh-context review is unavailable, disclose that the review is less independent.
 
 Review for correctness rather than finding volume. Ignore style preferences. A finding must state a falsifiable claim and have direct repository evidence when that evidence is accessible. When runtime or external evidence is unavailable, raise a named verification only if a concrete plan gap or repository fact makes the risk consequential. Discard unsupported suspicions.
 
