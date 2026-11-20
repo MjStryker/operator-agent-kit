@@ -33,3 +33,14 @@ apply to projects that install OAK skills; those follow their own rules.
   Approval to perform a change is not approval to commit it.
 - Commit messages are a short imperative subject line with no body and no AI
   attribution trailer (for example `Harden charter activation`).
+
+## Public repository
+
+- OAK is public. Files, examples, test fixtures, commit messages, and pull
+  request or issue text must not contain private data: personal names other
+  than the declared author, email addresses, home directory paths, internal
+  hosts or repositories, company or client names, credentials, or material
+  taken from private projects.
+- Build examples and fixtures from invented, generic cases.
+- Before proposing a commit, review the diff for such data and report what
+  was checked.
