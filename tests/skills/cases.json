@@ -1690,7 +1690,7 @@
         },
         {
           "id": "C5",
-          "requirement": "Supports decisive claims with personally checked source records; if a decisive record cannot be checked, labels the claim as relayed and unverified and qualifies the recommendation accordingly.",
+          "requirement": "Personally reads records/migration.json, records/compatibility.json and records/rollback.json before stating what each establishes.",
           "blocking": true,
           "scope": "contract"
         },

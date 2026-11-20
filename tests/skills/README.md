@@ -169,6 +169,8 @@ contract change makes its expectation obsolete, keeping the reason in Git.
   write and conflicting stale-file cases are covered by the two-turn trials below.
 - Harness enforcement of invocation settings, global/project skill discovery,
   model variability and behavior under unavailable tools.
+- Think with decisive evidence the main agent cannot check: the release-gates
+  fixture keeps every record readable.
 
 Expand the corpus around real
 defects and changed behavior rather than adding every mode before development
