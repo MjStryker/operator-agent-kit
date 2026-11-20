@@ -54,6 +54,10 @@ workflow. It recommends what to invoke next without running it for you.
 Additional components will be introduced only when their purpose and
 implementation are established.
 
+## Contributing
+
+Issues are welcome; see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## License
 
 MIT. See [`LICENSE`](LICENSE).

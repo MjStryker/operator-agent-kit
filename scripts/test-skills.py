@@ -10,6 +10,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -123,6 +124,7 @@ def check():
             require((dest / "unrelated/keep.txt").read_text() == "keep\n", f"{harness}: unrelated directory changed")
             for name, directory in skills.items():
                 require(packaged_inventory(directory) == inventory(dest / name), f"{harness}/{name}: installed bytes differ")
+    subprocess.run([sys.executable, str(ROOT / "scripts/check-private-data.py")], check=True)
     print(f"PASS: {len(skills)} skill contracts, {len(corpus)} scenarios, 4 installation targets (including replacement).")
     print("Behavior and utility: not evaluated by this command.")
 
