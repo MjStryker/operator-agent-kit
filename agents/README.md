@@ -16,6 +16,8 @@ bounded obligations before investigation. Tools are optional and discovered per
 project; common defines their execution/evidence rules. Audit policies and output
 are owned by `skills/audit/SKILL.md`, not these reusable profiles.
 
-`scripts/install-skills.sh` copies these canonical files unchanged to the audit
-bundle's `references/specialists/`. Other workflows may read that bundle. Edit source
-files here; native registration remains a harness-specific adapter outside OAK.
+The canonical files live in the OAK repository's `agents/` directory;
+`scripts/install-skills.sh` copies them unchanged to the audit bundle's
+`references/specialists/`. Other workflows may read that bundle. Edit the
+repository copy, never an installed one; native registration remains a
+harness-specific adapter outside OAK.
