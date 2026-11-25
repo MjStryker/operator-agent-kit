@@ -7,7 +7,7 @@ metadata:
   category: review
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.4"
+  version: "0.5"
 disable-model-invocation: true
 ---
 
@@ -18,7 +18,7 @@ or completion transitions. Persist only separately requested artifacts; saving a
 report authorizes that report alone. Zero confirmed defects is a valid outcome.
 This audit is not a formal independent review under any selection policy.
 
-Contract 0.4 uses qualitative obligations, evidence and limits, without audit scores,
+Contract 0.5 uses qualitative obligations, evidence and limits, without audit scores,
 weights or numerical coverage gates. Selection defaults to `same-model`; other
 policies are defined in the execution reference. Earlier reports retain their
 original contract, rubric and profile interpretation.

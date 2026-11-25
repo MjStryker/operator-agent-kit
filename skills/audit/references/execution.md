@@ -1,4 +1,4 @@
-# Execution and continuity — contract 0.4
+# Execution and continuity — contract 0.5
 
 ## Framing and exposure
 

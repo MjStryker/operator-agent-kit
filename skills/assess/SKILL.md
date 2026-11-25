@@ -7,7 +7,7 @@ metadata:
   category: analysis
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.1"
+  version: "0.2"
 disable-model-invocation: true
 ---
 
@@ -21,4 +21,4 @@ Lead with the bottom line. Briefly explain the decisive reasons, material tradeo
 
 Use the context already available. Perform read-only inspection when accessible evidence would materially improve the assessment; otherwise state the evidence limit. Do not turn the request into implementation or modify anything unless the user also asks.
 
-Keep the response compact unless the subject is consequential or the user asks for depth. Avoid vague reactions such as “I feel,” “it seems nice,” or “I like it.” Prefer precise language such as “The evidence favors,” “The main tradeoff is,” or “My assessment is.”
+Keep the response compact unless the subject is consequential or the user asks for depth. Phrase each judgment as a claim about the evidence or the tradeoff, not as a personal reaction.
