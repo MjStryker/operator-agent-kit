@@ -107,15 +107,15 @@ are a practical starting sample, not a statistical guarantee. For a skill revisi
 use the previous skill snapshot as an additional comparison when distinguishing
 regression from the value of using any skill.
 
-## Audit contract 0.4: targeted decision exercises
+## Audit contract 0.5: targeted decision exercises
 
-Contract 0.4 removes the numerical mode and its scoring reference. All audits
+The contract has no numerical mode or scoring reference. All audits
 use `references/obligations.md` for qualitative states, inspected paths and unknowns.
 Scenario contract lists identify current owners for evaluator traceability; they
 are not required-reading lists supplied to the tested agent.
 
-Some live prompts deliberately retain legacy score requests to exercise the
-transition: explain the removed mechanism and return useful qualitative evidence,
+Some live prompts deliberately ask for audit scores: say that the contract
+assesses obligations qualitatively and return useful qualitative evidence,
 without silently restoring scores or blocking on a numerical threshold. The seven
 `trial_kind: decision-exercise` cases cover bounded contract decisions for:
 family-only grids and legacy scoring requests, partial-path evidence, unavailable browser, quota/resumption,
@@ -132,8 +132,8 @@ or real quota recovery. Grade decisions from the recorded responses; grade actua
 orchestration only from live runtime traces. The old runner's exact-session tests
 verify its CLI transport, not the audit agent's mission lifecycle.
 
-The scenario expectations were updated for audit 0.4, which removed audit
-scoring. The revised behavioral scenarios have not yet been rerun.
+The scenario expectations were updated for audit 0.5. The revised behavioral
+scenarios have not yet been rerun.
 
 A stopped decision exercise is not a completed live audit scenario. No test that
 matches contract wording or parses the corpus proves behavior. Formal review rules

@@ -26,7 +26,7 @@ New tasks have one explicit scope:
 - `personal`: stored in `PERSONAL_TASKS_DIR`;
 - `project`: stored in the current project's `PROJECT_TASKS_DIR` and suitable for repository sharing.
 
-`task define personal` and `task define project` select it explicitly. Without a qualifier, use `project` only when the operator explicitly asked for a shared/project task or the task contributes to a named charter; otherwise preserve the historical `personal` default. State the selected scope in the proposal.
+`task define personal` and `task define project` select it explicitly. Without a qualifier, use `project` only when the operator explicitly asked for a shared/project task or the task contributes to a named charter; otherwise use `personal`. State the selected scope in the proposal.
 
 Charter-derived tasks are project-scoped by default. Child tasks inherit the parent scope.
 

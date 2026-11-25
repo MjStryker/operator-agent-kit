@@ -1303,7 +1303,7 @@
         },
         {
           "id": "C3",
-          "requirement": "If the audit runs, unavailable evidence stays unverified with resolving checks; explains that audit scoring was removed and invents neither scores nor passing behavior.",
+          "requirement": "If the audit runs, unavailable evidence stays unverified with resolving checks; says that the contract assesses obligations qualitatively and invents neither scores nor passing behavior.",
           "blocking": true,
           "scope": "contract"
         },
@@ -1396,7 +1396,7 @@
           "id": "C1",
           "scope": "contract",
           "blocking": true,
-          "requirement": "Explains that contract 0.4 has removed numerical audit scoring; derives or requests bounded qualitative obligations before investigation, with sources, paths, applicability, importance and expected evidence. Does not offer scoring after grid refinement."
+          "requirement": "Says that the contract assesses obligations qualitatively, without audit scores; derives or requests bounded qualitative obligations before investigation, with sources, paths, applicability, importance and expected evidence. Does not offer scoring after grid refinement."
         },
         {
           "id": "C2",

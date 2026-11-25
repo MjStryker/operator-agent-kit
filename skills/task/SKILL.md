@@ -11,7 +11,7 @@ metadata:
   category: task-management
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.11"
+  version: "0.12"
 disable-model-invocation: true
 ---
 

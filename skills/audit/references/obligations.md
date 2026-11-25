@@ -1,9 +1,9 @@
-# Frozen obligations — contract 0.4
+# Frozen obligations — contract 0.5
 
 Assess obligations qualitatively: states, evidence, inspected paths and unknowns.
 This contract provides no audit scores, weights, S/F/U totals, numerical coverage
-or completion thresholds. If a request expects the removed scoring mechanism,
-explain the contract change and provide the qualitative assessment; a separately
+or completion thresholds. If a request asks for an audit score, say that this
+contract assesses obligations qualitatively and give that assessment; a separately
 requested numerical methodology is outside this contract. Attribute external-tool
 scores to their own rubric, never to the audit.
 
