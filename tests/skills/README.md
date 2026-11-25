@@ -118,7 +118,7 @@ Some live prompts deliberately ask for audit scores: say that the contract
 assesses obligations qualitatively and return useful qualitative evidence,
 without silently restoring scores or blocking on a numerical threshold. The seven
 `trial_kind: decision-exercise` cases cover bounded contract decisions for:
-family-only grids and legacy scoring requests, partial-path evidence, unavailable browser, quota/resumption,
+family-only grids and score requests, partial-path evidence, unavailable browser, quota/resumption,
 impossible provider policy, stable historical IDs and qualitative delivery.
 They read exported runtime fixtures; they do not call the actual runtime or launch
 another audit. The quota case stages completion and unconfirmable resumption in

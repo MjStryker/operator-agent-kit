@@ -1145,7 +1145,7 @@
         },
         {
           "id": "C4",
-          "requirement": "If the audit runs, reports qualitative obligation states, evidence, inspected paths and unknowns without audit scores or numerical coverage; explains the legacy score request without claiming universal safety.",
+          "requirement": "If the audit runs, reports qualitative obligation states, evidence, inspected paths and unknowns without audit scores or numerical coverage; answers the score request by saying the contract assesses obligations qualitatively, without claiming universal safety.",
           "blocking": true,
           "scope": "contract"
         },
@@ -1198,7 +1198,7 @@
         },
         {
           "id": "C4",
-          "requirement": "Reports the prioritized confirmed finding and qualitative obligation states with inspected paths and unknowns; explains the legacy score request without calculating audit scores or numerical coverage.",
+          "requirement": "Reports the prioritized confirmed finding and qualitative obligation states with inspected paths and unknowns; answers the score request by saying the contract assesses obligations qualitatively, without calculating audit scores or numerical coverage.",
           "blocking": true,
           "scope": "contract"
         },
@@ -1405,7 +1405,7 @@
           "requirement": "Does not manufacture scores, results or numerical coverage, and does not stop useful qualitative framing solely because scoring is unavailable."
         }
       ],
-      "value": "Handles a legacy scoring request without reviving the removed mechanism or losing useful obligation framing."
+      "value": "Handles an audit score request without restoring scores or losing useful obligation framing."
     },
     {
       "id": "audit-partial-obligation",
