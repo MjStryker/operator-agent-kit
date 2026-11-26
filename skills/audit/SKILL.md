@@ -7,7 +7,7 @@ metadata:
   category: review
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.5"
+  version: "0.6"
 disable-model-invocation: true
 ---
 
