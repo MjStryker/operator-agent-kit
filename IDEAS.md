@@ -78,6 +78,12 @@ Capability gaps left open by the foundation work. Each needs the operator's auth
 |---|---|
 | **`refine-prompt` premise support (G7)** | Make `refine-prompt` say where each premise comes from, so a reader can tell a sourced fact from an assumption. |
 
+## Skill testing tools
+
+| Candidate | What it could improve |
+|---|---|
+| **Paired trial review page** | Generate a static, read-only HTML page from a trial output directory, outside Git: one arm with its rubric first, the side-by-side view of both arms only after each is graded ([`tests/skills/README.md`](tests/skills/README.md), comparative trials). Grades stay in each trial's `evaluation.json`; no composite score; quality and cost shown apart. Build it only after a paired campaign on Codex and Claude Code where manual grading time was measured and found to be a real friction. |
+
 ## Questions that need real use to answer
 
 - Does a map stop when decisions are settled and hand off to plans, or remain
