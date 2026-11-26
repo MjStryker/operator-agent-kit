@@ -27,6 +27,12 @@ apply to projects that install OAK skills; those follow their own rules.
   confidence. When that is not possible, say so and record the reduced
   independence rather than presenting the review as independent.
 
+## Skill trials
+
+- After changing a skill's behavior, propose paired live trials on Codex and
+  Claude Code ([`tests/skills/README.md`](tests/skills/README.md)) before
+  claiming an improvement. Passing fast checks are not behavioral evidence.
+
 ## Commits
 
 - Commit only when the operator explicitly asks for that specific commit.

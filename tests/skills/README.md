@@ -176,15 +176,33 @@ Expand the corpus around real
 defects and changed behavior rather than adding every mode before development
 can continue.
 
-## Optional live Codex runner
+## Optional live runner (Codex and Claude Code)
 
 `scripts/run-skill-trials.py` runs the three starter cases, three pairs each,
-under Linux `bwrap`. It uses file-based Codex authentication already present in
-the local account. It consumes model usage; it does not grade responses or retry
-failed trials. Supply the native runtime directory from your installed Codex CLI:
+under Linux `bwrap`, with `--harness codex` (default) or `--harness claude`. It
+consumes model usage; it does not grade responses or retry failed trials.
+
+For Codex, it uses file-based Codex authentication already present in the local
+account. Supply the native runtime directory from your installed Codex CLI:
 
 ```sh
 python3 scripts/run-skill-trials.py --vendor /path/to/vendor/x86_64-unknown-linux-musl --output /tmp/oak-live-trials
+```
+
+For Claude Code, create a token once with `claude setup-token` and save it to
+`~/.config/oak/claude-oauth-token`, readable only by you (`chmod 600`). Do not
+export `CLAUDE_CODE_OAUTH_TOKEN` in your shell profile: it would take precedence
+over your normal Claude Code login. The runner uses that variable when it is set,
+otherwise the file, and refuses a file others can read. Without `--claude-binary`,
+it resolves the installed `claude` command to its exact versioned binary and
+prints the version and token source before starting; pass `--claude-binary` when
+the installed command is not a standalone native binary. `--model` is required, so
+each campaign states the model it measures; prefer a full model ID to an alias.
+`turns[].models_used` records the model that answered. If trials fail because the
+token expired, create and save a new one.
+
+```sh
+python3 scripts/run-skill-trials.py --harness claude --model claude-sonnet-5-5 --output /tmp/oak-claude-trials
 ```
 
 Use `--cases`, `--pairs`, `--jobs`, `--model` and `--timeout` to limit a campaign.
@@ -192,10 +210,12 @@ Cases may declare `followups` with a scripted reply and optional `before_files`
 replacements, kept outside the tested agent's workspace. For the accepted-write
 and stale-write cases, the runner ends the first turn, checks that the workspace
 was not modified, applies any declared external replacement, then resumes the
-exact UUID returned by `thread.started`. It verifies that the second turn keeps
-that same session; it never selects the newest session. A failed first turn or an
-early write stops the trial before the scripted acceptance. `--timeout` applies
-to each turn. These are fixture-only replies, not approval to modify real records.
+exact session: the UUID returned by Codex `thread.started`, or the UUID the
+runner imposed on Claude Code with `--session-id` and resumes with `--resume`.
+It verifies that the second turn keeps that same session; it never selects the
+newest session. A failed first turn or an early write stops the trial before the
+scripted acceptance. `--timeout` applies to each turn. These are fixture-only
+replies, not approval to modify real records.
 
 ```sh
 python3 scripts/run-skill-trials.py --vendor /path/to/vendor/x86_64-unknown-linux-musl --output /tmp/oak-resumed-trials --cases task-sync-accepted-write task-sync-stale-write
@@ -206,22 +226,60 @@ Per-turn prompts, events and before/after inventories are retained. In each
 observation, `turns[].external_changes` identifies the runner's replacement,
 while `turns[].agent_changes` identifies changes during that agent turn. The
 aggregate `changes` includes both, so it must not be used alone to attribute
-writes to the agent. The fake-CLI unit checks test runner behavior and credential
-cleanup; they do not grade a model's behavior.
+writes to the agent. Python bytecode writing is disabled in both harnesses so
+running tests does not count as an agent write. The fake-CLI unit checks test
+runner behavior and credential cleanup; they do not grade a model's behavior.
+The runner never follows a symlink the agent created: inventories record it as
+`symlink:<target>`, and an unreadable file as `unreadable`.
 
 Every trial has its own home and Git worktree root. The original home, OAK source,
-rubric and other trials are not mounted into the namespace. User configuration,
-memory, browser and apps are disabled; collaboration is available in both arms.
-The selected contract is path-pinned in the skill arm. The runner retains JSONL
-events, session traces, before/after hashes and elapsed times. Check its recorded
-skill-read evidence before treating a skill trial as applicable; missing discovery
-or a correct answer by itself is not a successful skill invocation.
+rubric and other trials are not mounted into the namespace; an isolation probe
+also checks that no user skills, instructions, settings, Claude projects or
+memory, OAK credential file, `/etc/claude-code` managed settings or Docker socket
+are visible, and names any it finds. User
+configuration, memory, web tools, browser and apps are disabled; collaboration
+(Codex multi-agent, Claude Code `Task`) is available in both arms. The selected
+contract is path-pinned in the skill arm. The runner retains JSONL events,
+session traces, before/after hashes and elapsed times. Check `evidence` in each
+observation before treating a skill trial as applicable: `selected_skill_read_observed`
+records a read of the pinned file (for Claude Code, a successful main-agent `Read`
+of one of the two copies in `.agents/skills` or `.claude/skills`, or a `Skill` call
+naming the skill; reads through Bash or by a subagent are not counted), and
+`selected_skill_in_catalog` whether the skill was listed to the model (OAK skills
+are explicit-only, so it is normally absent). Missing discovery or a correct answer
+by itself is not a successful skill invocation. Observations written before
+Claude Code support kept these two fields under `conditions`.
 
-System runtime and networking for authentication/inference remain available.
-Authentication is copied into the temporary home and removed after normal exit,
-failure or timeout; if the runner itself is forcibly terminated, remove the
-temporary `private-home/.codex/auth.json` copies before retaining the evidence.
-No model answer, credential or full transcript belongs in Git by default.
+Claude Code specifics:
+
+- Only the built-in tools in `CLAUDE_TOOLS` are offered; scheduling, remote,
+  publishing and web tools are not. Bundled Claude Code skills and built-in
+  plugins remain, identical in both arms, and are recorded in `evidence.init`.
+- A turn that exits non-zero is `failed`. A turn that exits normally is
+  `invalid`, not completed, when the permission mode is not `bypassPermissions`,
+  a tool was denied, or the result is an error. Do not set
+  `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB`: it forces the default mode and commands are
+  denied.
+- Settings the account delivers cannot be excluded from the client; the runner
+  records whether `remote-settings.json` arrived empty.
+- `total_cost_usd` is a client-side estimate, not billing; Codex trials record
+  elapsed time only, so costs are not comparable across harnesses.
+
+System runtime and networking for authentication/inference remain available, so
+a tested agent can reach public sources, including the OAK repository; record
+this when judging a baseline. The tested agent can read its own credential.
+Codex authentication is copied into the temporary home and removed after normal
+exit, failure or timeout. The Claude Code token is passed in the environment and
+never written by the runner. When each trial ends, including after a failure,
+the runner replaces exact occurrences of the token in file names and contents
+in the trial directory and in the observation record, lists them in
+`credential_redacted_from`, and lists files it could not read in
+`credential_check_unreadable`. This is observable, not enforced: an encoded or
+partial copy, or one sent over the network, is not caught. Revoke the token if
+you suspect misuse. If the runner itself is forcibly terminated, remove temporary
+`private-home/.codex/auth.json` copies and search the evidence for the token
+before retaining it. No model answer, credential or full transcript belongs in
+Git by default.
 
 Past campaign results are not kept in the repository; record new ones outside Git.
 
