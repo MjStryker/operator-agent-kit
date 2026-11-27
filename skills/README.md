@@ -10,7 +10,7 @@ independent of any particular model, framework, IDE, or agent harness.
 |---|---|
 | [`oak`](oak/SKILL.md) | Find the smallest suitable OAK skill or workflow and what to invoke next. |
 | [`charter`](charter/SKILL.md) | Manage repository-owned capability commitments and their lifecycle. |
-| [`recon`](recon/SKILL.md) | Scout a repository-backed engineering objective through scout and challenger subagents before choosing what to do next. |
+| [`recon`](recon/SKILL.md) | Investigate a feature, a problem, or another subject against the project's actual behavior, through scout and challenger subagents, before choosing what to do next. |
 | [`think`](think/SKILL.md) | Answer a search or planning question through a subagent, keeping exploration out of the conversation. |
 | [`fix-issue`](fix-issue/SKILL.md) | Verify a reported issue and fix it only when warranted. |
 | [`pushback`](pushback/SKILL.md) | Challenge unsupported or overstated claims in an agent response. |
