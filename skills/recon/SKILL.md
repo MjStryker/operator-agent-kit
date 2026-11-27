@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 Investigate a feature, a problem, or another subject against how the project actually behaves, and report only. Do not edit project files, fix or implement anything, or produce an implementation plan. Return with enough evidence for the operator to choose the next action.
 
-Recon answers a question about one subject. To search a repository, component, or diff for defects, use `audit` instead.
+Recon answers a question about one subject. To search a repository, component, or diff for defects, recommend `audit` to the operator instead.
 
 Recon separates three roles so exploration does not flood the conversation and unverified claims do not reach the operator as facts:
 
@@ -46,11 +46,11 @@ When the operator follows up on an earlier recon in the same conversation and a 
 
 ## Observe, do not change
 
-Prefer observed behavior to inference from code when it can settle a material question: run the tests, the program, or a disposable probe or reproduction, and read logs and runtime state. Work in a disposable location (temporary directory, scratch worktree, local copy), never over uncommitted operator work. Never modify project files or write to shared or external systems (services, databases, tickets, chat, remote repositories); if an observation needs such a write, ask the operator first. Give every subagent these boundaries.
+Prefer observed behavior to inference from code when it can settle a material question: run the tests, the program, or a disposable probe or reproduction, and read logs and runtime state. Work in a disposable location (temporary directory, scratch worktree, local copy), never over uncommitted operator work, and keep everything a run writes there. Never modify project files or local state outside it (databases, containers, installed packages), and never write to shared or external systems (services, shared databases, tickets, chat, remote repositories). If an observation needs such a write, the root agent asks the operator first; a subagent reports the need to the root agent instead. Give every subagent these boundaries.
 
 ## Problems
 
-When the subject is a bug, failure, or unexpected behavior, the scout also seeks its cause within an effort budget (attempts or time) stated at the start. It reads raw evidence (exit codes, statuses, logs) rather than the displayed message, which can hide the real failure; reproduces the problem at least twice from a clean start; and proves the cause both ways: present, the problem appears; removed or bypassed, it disappears.
+When the subject is a bug, failure, or unexpected behavior, the scout also seeks its cause within an effort budget (attempts or time) that the root agent sets in the scout packet. It reads raw evidence (exit codes, statuses, logs) rather than the displayed message, which can hide the real failure; reproduces the problem at least twice from a clean start; and proves the cause both ways: present, the problem appears; removed or bypassed, it disappears.
 
 The cause is `established` only once the root agent has rerun that proof. Otherwise it is `not established`, and the report ranks hypotheses by evidence for and against, with what would settle each: instrumentation, a condition to recreate, a record to obtain. A simulation showing that a mechanism is possible does not show that it caused the reported occurrence.
 
@@ -99,13 +99,13 @@ Give the challenger an immutable packet containing the operator's request exactl
 
 Instruct the challenger to try to falsify the draft, not improve its prose. It checks consequential claims against the cited evidence and the repository, and looks for missed boundaries, unsupported classifications, directions that violate an observed constraint or add mechanism the evidence does not require, a cause not proven both ways, and inferences presented as observations. It returns a compact ledger of candidate objections, each with the challenged claim, the evidence inspected, its material effect, and a status of `candidate` or `unresolved`.
 
-Run the challenger on a different model than the root agent when one is available, and say so when none is. Its work remains part of recon, not a formal independent review; do not describe it as independent verification.
+Run the challenger on a different model than the root agent when one is available and authorized. Say so when none is, or when the harness does not show which model ran. Its work remains part of recon, not a formal independent review; do not describe it as independent verification.
 
 ## 4. Settle and verify
 
 Perform one falsification pass over the objections: check each against the draft and its evidence, and reject those resting only on speculation, preference, or a merely possible alternative. Where the challenger and root disagree about a consequential claim and one concrete evidence check can settle it, inspect that evidence once or ask the challenger one narrow follow-up. If the disagreement still stands, mark the claim unresolved and stop. Do not create another subagent.
 
-Before replying, personally inspect the cited evidence for the claims that most determine the operator's choice: every finding classified as blocking, every contradicted assumption, and the basis of any recommendation. Label every other material claim as reported by the scout and unverified.
+Before replying, personally inspect the cited evidence for the claims that most determine the operator's choice: every finding classified as blocking, every contradicted assumption, and the basis of any recommendation. Label every other material claim as reported by the scout and unverified. For a problem, rerun the both-way proof yourself before calling the cause `established`.
 
 ## Recon report
 
@@ -115,7 +115,7 @@ Return:
 2. Confirmed architecture and behavior.
 3. Incorrect or unsupported assumptions.
 4. Findings by classification.
-5. One to three viable directions, simplest first, each with effect, cost, and risk, not implementation plans. State rare cases as accepted limits, and flag mechanism the evidence does not require (lock, retry, cache, new type, setting, layer).
+5. One to three viable directions, simplest first, each with effect, cost, and risk, not implementation plans. While a problem's cause is not established, the directions are the checks that would settle it, not fixes. Name the rare cases a direction leaves uncovered as limits for the operator to accept, and flag mechanism the evidence does not require (lock, retry, cache, new type, setting, layer).
 6. Decisions or unavailable facts still required from the operator.
 7. A recommended next action when the evidence supports one.
 

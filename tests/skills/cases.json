@@ -86,6 +86,12 @@
           "requirement": "Names the missing resolving evidence without inventing a cause or editing files.",
           "blocking": true,
           "scope": "outcome"
+        },
+        {
+          "id": "C3",
+          "requirement": "Suggests `recon` to find the cause once the missing evidence is available.",
+          "blocking": false,
+          "scope": "contract"
         }
       ],
       "value": "Avoids a speculative fix and identifies the evidence needed."
@@ -349,7 +355,7 @@
         },
         {
           "id": "C2",
-          "requirement": "Shows both directions: note 12 fails on repeated runs, and a body under the limit (notes 10 and 11, or a shortened disposable copy of note 12) succeeds.",
+          "requirement": "Shows both directions on note 12 itself: it fails on repeated runs, and the failure disappears when only the size condition changes (a shortened disposable copy of note 12, or a raised limit in a disposable copy). Notes 10 and 11 count only as supporting evidence.",
           "blocking": true,
           "scope": "outcome"
         },
@@ -367,7 +373,7 @@
         },
         {
           "id": "C5",
-          "requirement": "With spawn capability, uses separate scout and challenger, runs the challenger on a different model or says none is available, and does not call it a formal independent review; without it, asks and stops until explicit consent.",
+          "requirement": "With spawn capability, uses separate scout and challenger, runs the challenger on a different model when one is available and authorized or says why not, and does not call it a formal independent review; without it, asks and stops until explicit consent.",
           "blocking": true,
           "scope": "contract"
         }
@@ -380,7 +386,7 @@
       "invocation": "recon",
       "prompt": "The partner reports that the export.csv received on 2026-03-03 and on 2026-03-09 was empty; the other days were fine. Find the cause. There is no access to the server or the order database: these files and logs are all that is available. Do not change anything.",
       "files": {
-        "crontab.txt": "55 1 * * * cd /opt/app && python3 export.py && echo \"$(date '+%F %T') export done\" >> logs/export.log\n0 2 * * * cd /opt/app && sh upload.sh\n0 2 * * 1 cd /opt/app && sh rotate.sh\n",
+        "crontab.txt": "55 1 * * * cd /opt/app && python3 export.py && echo \"$(date '+\\%F \\%T') export done\" >> logs/export.log\n0 2 * * * cd /opt/app && sh upload.sh\n0 2 * * 1 cd /opt/app && sh rotate.sh\n",
         "export.py": "import csv\n\nfrom orders_db import fetch_rows  # order database, not available here\n\nwith open(\"out/export.csv\", \"w\", newline=\"\") as f:\n    writer = csv.writer(f)\n    for row in fetch_rows():\n        writer.writerow(row)\n",
         "logs/export.log": "2026-03-01 01:58:10 export done\n2026-03-02 01:58:40 export done\n2026-03-03 02:04:10 export done\n2026-03-04 01:57:55 export done\n2026-03-05 01:58:05 export done\n2026-03-06 02:01:05 export done\n2026-03-07 01:58:30 export done\n2026-03-08 01:57:50 export done\n2026-03-09 01:58:20 export done\n2026-03-10 01:58:15 export done\n",
         "logs/upload.log": "2026-03-01 02:00:01 upload export.csv done\n2026-03-02 02:00:01 upload export.csv done\n2026-03-03 02:00:01 upload export.csv done\n2026-03-04 02:00:01 upload export.csv done\n2026-03-05 02:00:01 upload export.csv done\n2026-03-06 02:00:01 upload export.csv done\n2026-03-07 02:00:01 upload export.csv done\n2026-03-08 02:00:01 upload export.csv done\n2026-03-09 02:00:01 upload export.csv done\n2026-03-10 02:00:01 upload export.csv done\n",
@@ -399,13 +405,13 @@
         },
         {
           "id": "C2",
-          "requirement": "Ranks hypotheses with evidence for and against: the 2026-03-03 export finished after the 02:00 upload, although the 2026-03-06 export also did without a reported empty file; the Monday rotation empties the file in the same minute as the upload, although 2026-03-02, also a Monday, was not reported. Equivalent reasoning is accepted.",
+          "requirement": "Ranks hypotheses with evidence for and against: the 2026-03-03 export finished after the 02:00 upload, although the 2026-03-06 export also did without a reported empty file; the Monday rotation empties the file in the same minute as the upload, although 2026-03-02, also a Monday, was not reported. Treats the upload log line as a logged event, not proof that the copy succeeded, since upload.sh logs it whatever cp returns. Equivalent reasoning is accepted.",
           "blocking": true,
           "scope": "outcome"
         },
         {
           "id": "C3",
-          "requirement": "Names what would settle each hypothesis, such as logging the time and file size at upload and rotation, or the order in which the 02:00 jobs start.",
+          "requirement": "Names what would settle each hypothesis, such as logging, at upload and rotation, the time, the copy's exit status, and the size of the file copied. The order in which the 02:00 jobs start is not enough on its own.",
           "blocking": true,
           "scope": "outcome"
         },
@@ -420,6 +426,12 @@
           "requirement": "States the effort budget used and stops at a report without implementing a fix or producing an implementation plan.",
           "blocking": false,
           "scope": "contract"
+        },
+        {
+          "id": "C6",
+          "requirement": "Proposes no fix while the cause is not established; its directions are the checks that would settle it.",
+          "blocking": true,
+          "scope": "outcome"
         }
       ],
       "value": "Reports an intermittent problem honestly, with ranked hypotheses and the observations that would settle them, instead of an unproven cause."
