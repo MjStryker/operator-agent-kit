@@ -7,7 +7,7 @@ metadata:
   category: implementation
   repository: "https://github.com/MjStryker/operator-agent-kit"
   status: experimental
-  version: "0.1"
+  version: "0.2"
 disable-model-invocation: true
 ---
 
@@ -42,7 +42,7 @@ Do not treat “edge case,” “legacy,” or “outside this MR” as proof th
 
 ## Act
 
-- For `false positive`, `not established`, `defer`, or `accept`, do not edit. Report the evidence and the next resolving action, if any.
+- For `false positive`, `not established`, `defer`, or `accept`, do not edit. Report the evidence and the next resolving action, if any; when a cause still needs to be found, suggest `recon`.
 - For `fix now`, implement the smallest complete fix. Inspect affected call sites and contracts, add or update a regression test when it provides meaningful protection, and run the relevant checks.
 - Ask the user only when a missing decision changes observable behavior, scope, risk, ownership, or another material tradeoff. Otherwise make and state the narrowest supported assumption.
 - Do not perform adjacent cleanup.
